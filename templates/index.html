@@ -1,1 +1,206 @@
-<h1>Hello World</h1>
+<!DOCTYPE html>
+<html>
+<head>
+<title>Student Management</title>
+
+<style>
+body{
+    font-family: Arial;
+    background: #f2f6ff;
+    margin: 0;
+    padding: 0;
+}
+
+.container{
+    width: 60%;
+    margin: auto;
+    background: white;
+    padding: 25px;
+    margin-top: 30px;
+    border-radius: 12px;
+    box-shadow: 0px 0px 15px #ccc;
+}
+
+h1{
+    text-align: center;
+    color: #333;
+}
+
+h2{
+    color: #444;
+}
+
+.card{
+    background: linear-gradient(45deg,#007bff,#00c6ff);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.stats{
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.small-card{
+    flex: 1;
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.green{background:#28a745;}
+.orange{background:#ff9800;}
+.red{background:#dc3545;}
+
+input{
+    width: 95%;
+    padding: 10px;
+    margin: 6px 0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+button{
+    width: 100%;
+    padding: 10px;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.student{
+    background: #f8f9fa;
+    padding: 15px;
+    margin: 12px 0;
+    border-left: 5px solid #007bff;
+    border-radius: 8px;
+}
+
+a{
+    text-decoration: none;
+    margin-right: 10px;
+    font-weight: bold;
+    display: inline-block;
+    margin-top: 6px;
+}
+
+.delete{color:red;}
+.edit{color:blue;}
+.att{color:green;}
+.pay{color:purple;}
+.course{color:orange;}
+.publish{color:#007bff;}
+
+.footer{
+    text-align: center;
+    margin-top: 20px;
+    color: gray;
+    font-size: 14px;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<h1>Student Management System</h1>
+
+<!-- TOTAL -->
+<div class="card">
+    <h2>Total Students: {{ total }}</h2>
+</div>
+
+<!-- DASHBOARD -->
+<div class="stats">
+    <div class="small-card green">
+        Paid: {{ paid }}
+    </div>
+
+    <div class="small-card orange">
+        Avg CGPA: {{ avg_cgpa }}
+    </div>
+
+    <div class="small-card red">
+        Highest: {{ max_cgpa }}
+    </div>
+</div>
+
+<!-- SEARCH (FIXED optional blank issue) -->
+<form action="/search" method="get">
+    <input type="text" name="keyword" placeholder="Search by name or course...">
+    <button type="submit">Search Student</button>
+</form>
+
+<br>
+
+<!-- ADD -->
+<form action="/add" method="post">
+    <input type="text" name="name" placeholder="Enter Name" required>
+    <input type="number" name="age" placeholder="Enter Age" required>
+    <input type="text" name="course" placeholder="Enter Course" required>
+    <input type="number" name="marks" placeholder="Enter Marks (0-100)" required>
+    <button type="submit">Add Student</button>
+</form>
+
+<hr>
+
+<h2>Student List</h2>
+
+{% if students and students|length > 0 %}
+
+{% for s in students %}
+<div class="student">
+
+<b>ID:</b> {{ s['id'] }} <br>
+<b>Name:</b> {{ s['name'] }} <br>
+<b>Age:</b> {{ s['age'] }} <br>
+<b>Course:</b> {{ s['course'] }} <br>
+<b>Marks:</b> {{ s['marks'] }} <br>
+<b>CGPA:</b> {{ s['cgpa'] }} <br>
+
+<b>Attendance:</b> {{ s['attendance'] }} <br>
+<b>Attendance %:</b> {{ s['attendance'] * 10 }}% <br>
+
+<b>Fee:</b> {{ s['fee'] }} <br>
+<b>Result:</b> {{ s['result_status'] }} <br><br>
+
+<!-- SAFE LINKS (Flask best practice) -->
+<a class="delete" href="{{ url_for('delete', id=s['id']) }}">Delete</a>
+
+<a class="edit" href="{{ url_for('edit', id=s['id']) }}">Edit</a>
+
+<a class="att" href="{{ url_for('attendance', id=s['id']) }}">+Attendance</a>
+
+<a class="pay" href="{{ url_for('pay', id=s['id']) }}">Pay Fee</a>
+
+<a class="course" href="{{ url_for('move_course', id=s['id'], new_course='CSE') }}">Move CSE</a>
+
+<a class="publish" href="{{ url_for('publish', id=s['id']) }}">Publish Result</a>
+
+</div>
+{% endfor %}
+
+{% else %}
+
+<p style="text-align:center;color:gray;">
+No students found 😢
+</p>
+
+{% endif %}
+
+<div class="footer">
+    Developed by Pixel Pionners 😎🔥
+</div>
+
+</div>
+
+</body>
+</html>
